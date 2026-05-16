@@ -769,190 +769,204 @@ body {
 /* ══════════════════════════════════════
    ANIMATIONS
 ══════════════════════════════════════ */
-@keyframes fadeIn
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+@keyframes pulse-wa {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
+  50% { box-shadow: 0 4px 32px rgba(37,211,102,0.8), 0 0 0 8px rgba(37,211,102,0.1); }
+}
 
-@media screen and (max-width: 768px) {
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-  body {
-    overflow-x: hidden;
-  }
-
-  /* NAVBAR */
-  .navbar {
-    height: 60px;
-    padding: 0 12px;
-  }
-
-  .nav-logo {
-    gap: 6px;
-    max-width: 120px;
-  }
-
-  .nav-logo-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 12px;
-  }
-
-  .nav-logo-text {
-    font-size: 11px;
-    line-height: 1;
-  }
-
-  .nav-logo-text span {
-    font-size: 6px;
-    letter-spacing: 1px;
-  }
-
-  .nav-links {
-    gap: 10px;
-  }
-
-  .nav-links a {
-    font-size: 8px;
-    letter-spacing: 1px;
-  }
-
-  .nav-order-btn {
-    display: none;
-  }
-
-  /* HERO SECTION */
-  .hero {
-    min-height: 100vh;
-    padding: 90px 18px 60px;
-    justify-content: center;
-  }
-
-  .hero-badge {
-    font-size: 8px;
-    letter-spacing: 2px;
-    padding: 6px 10px;
-    margin-bottom: 18px;
-  }
-
-  .hero h1 {
-    font-size: 48px;
-    line-height: 0.95;
-    margin-bottom: 6px;
-  }
-
-  .hero h1 em {
-    margin-top: -4px;
-  }
-
-  .hero-sub {
-    font-size: 10px;
-    letter-spacing: 2px;
-    margin-bottom: 14px;
-  }
-
-  .hero-divider {
-    width: 60px;
-    margin-bottom: 20px;
-  }
-
-  .hero-tagline {
-    font-size: 14px;
-    line-height: 1.6;
-    max-width: 290px;
-    margin-bottom: 28px;
-    padding: 0;
-  }
-
-  /* BUTTONS */
-  .hero-ctas {
-    flex-direction: row;
-    gap: 10px;
-    width: auto;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: auto;
-    padding: 12px 18px;
-    font-size: 9px;
-    letter-spacing: 1px;
-  }
-
-  /* REMOVE BOTTOM INFO */
-  .hero-info {
-    display: none;
-  }
-
-  .scroll-indicator {
-    display: none;
-  }
-
-  /* SECTIONS */
-  .section {
-    padding: 60px 16px;
-  }
-
-  .section-title {
-    font-size: 30px;
-  }
-
-  .section-subtitle {
-    font-size: 14px;
-  }
-
-  /* GRIDS */
-  .menu-grid,
-  .specials-grid,
+/* ══════════════════════════════════════
+   RESPONSIVE — TABLET (max 900px)
+══════════════════════════════════════ */
+@media (max-width: 900px) {
   .contact-grid {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
-
-  /* MENU TABS */
-  .menu-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    justify-content: flex-start;
-    padding-bottom: 8px;
-  }
-
-  .menu-tab {
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  /* ABOUT */
-  .about-strip {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px 16px;
-  }
-
-  /* MAP */
   .map-container {
-    height: 260px;
+    height: 300px;
   }
-
-  /* FOOTER */
-  .footer {
-    padding: 36px 16px 20px;
+  .specials-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .footer-links {
-    gap: 14px;
+/* ══════════════════════════════════════
+   RESPONSIVE — MOBILE (max 768px)
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── NAV ── */
+  .navbar {
+    padding: 0 16px;
+    height: 60px;
   }
+  :root { --nav-h: 60px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-logo-text { font-size: 15px; }
 
-  .footer-links a {
+  /* ── HERO ── */
+  .hero {
+    padding: 100px 16px 60px;
+    min-height: 100svh;
+  }
+  .hero-badge {
     font-size: 10px;
+    letter-spacing: 3px;
+    padding: 5px 14px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 11vw, 60px);
+    letter-spacing: 0;
+  }
+  .hero h1 em {
+    font-size: 1.05em;
+    margin-top: -6px;
+  }
+  .hero-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+  .hero-tagline {
+    font-size: 15px;
+    margin-bottom: 32px;
+    padding: 0 8px;
+  }
+  .hero-ctas {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+    padding: 15px 24px;
+    font-size: 12px;
+  }
+  .hero-info { display: none; }
+  .scroll-indicator { display: none; }
+
+  /* ── ABOUT STRIP ── */
+  .about-strip {
+    padding: 20px 16px;
+    gap: 16px;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+  .about-strip-item {
+    width: 100%;
   }
 
-  /* FLOATING WHATSAPP */
+  /* ── SECTIONS ── */
+  .section { padding: 52px 16px; }
+  .section-header { margin-bottom: 36px; }
+  .section-eyebrow { font-size: 10px; letter-spacing: 4px; }
+
+  /* ── MENU ── */
+  .menu-tabs {
+    gap: 6px;
+    margin-bottom: 32px;
+  }
+  .menu-tab {
+    font-size: 10px;
+    padding: 8px 14px;
+    letter-spacing: 1px;
+  }
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .menu-card { padding: 16px; }
+  .menu-card-name { font-size: 13px; }
+  .menu-card-price { font-size: 15px; }
+  .menu-card-desc { font-size: 12px; }
+
+  /* ── SPECIALS ── */
+  .specials-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .special-card-img { height: 160px; }
+
+  /* ── ORDER SECTION ── */
+  .order-section { padding: 60px 16px; }
+  .order-subtitle { font-size: 15px; padding: 0 8px; }
+  .whatsapp-btn {
+    padding: 16px 28px;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  .order-options {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* ── CONTACT ── */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .map-container { height: 260px; }
+  .contact-icon { width: 38px; height: 38px; font-size: 16px; }
+
+  /* ── FOOTER ── */
+  .footer { padding: 40px 16px 24px; }
+  .footer-logo { font-size: 22px; }
+  .footer-links {
+    gap: 16px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-links a { font-size: 10px; }
+
+  /* ── FLOAT BUTTON ── */
   .float-wa {
-    width: 50px;
-    height: 50px;
-    bottom: 16px;
+    width: 52px;
+    height: 52px;
+    bottom: 20px;
     right: 16px;
   }
+  .float-wa svg { width: 26px; height: 26px; }
+  .float-wa-label { display: none; }
+}
 
-  .float-wa svg {
-    width: 24px;
-    height: 24px;
+/* ══════════════════════════════════════
+   RESPONSIVE — SMALL PHONES (max 400px)
+══════════════════════════════════════ */
+@media (max-width: 400px) {
+  .hero h1 {
+    font-size: 32px;
   }
-
+  .menu-tab {
+    font-size: 9px;
+    padding: 7px 10px;
+  }
+  .whatsapp-btn {
+    padding: 14px 20px;
+    font-size: 12px;
+  }
+  .section { padding: 44px 12px; }
 }
