@@ -770,3 +770,161 @@ body {
    ANIMATIONS
 ══════════════════════════════════════ */
 @keyframes fadeIn
+
+/* ══════════════════════════════════════
+   MOBILE RESPONSIVE
+══════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    padding: 0 14px;
+    height: 70px;
+  }
+
+  .nav-logo {
+    gap: 8px;
+  }
+
+  .nav-logo-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .nav-logo-text {
+    font-size: 14px;
+    line-height: 1.1;
+  }
+
+  .nav-logo-text span {
+    font-size: 8px;
+    letter-spacing: 2px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .hero {
+    padding: 120px 18px 100px;
+  }
+
+  .hero-badge {
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 6px 14px;
+  }
+
+  .hero h1 {
+    font-size: 56px;
+    line-height: 0.95;
+  }
+
+  .hero-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+  }
+
+  .hero-tagline {
+    font-size: 16px;
+    line-height: 1.7;
+    padding: 0 10px;
+    margin-bottom: 36px;
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 92%;
+    justify-content: center;
+    padding: 15px 20px;
+  }
+
+  .hero-info {
+    position: static;
+    margin-top: 48px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hero-info-item .value {
+    font-size: 15px;
+  }
+
+  .section {
+    padding: 64px 18px;
+  }
+
+  .section-title {
+    font-size: 34px;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+  }
+
+  .about-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 18px;
+  }
+
+  .menu-grid,
+  .specials-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+  }
+
+  .menu-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .map-container {
+    height: 300px;
+  }
+
+  .order-options {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer {
+    padding: 40px 18px 24px;
+  }
+
+  .footer-links {
+    gap: 16px;
+  }
+
+  .float-wa {
+    width: 54px;
+    height: 54px;
+    bottom: 18px;
+    right: 18px;
+  }
+
+  .float-wa svg {
+    width: 28px;
+    height: 28px;
+  }
+
+}
