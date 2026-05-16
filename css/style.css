@@ -771,102 +771,128 @@ body {
 ══════════════════════════════════════ */
 @keyframes fadeIn
 
-/* ══════════════════════════════════════
-   MOBILE RESPONSIVE
-══════════════════════════════════════ */
+/* =================================================
+   FINAL MOBILE FIX
+================================================= */
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
 
   .navbar {
-    padding: 0 14px;
-    height: 70px;
+    padding: 10px 14px;
+    height: auto;
+    min-height: 70px;
   }
 
   .nav-logo {
-    gap: 8px;
+    max-width: 180px;
+    gap: 6px;
   }
 
   .nav-logo-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+    flex-shrink: 0;
   }
 
   .nav-logo-text {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.1;
   }
 
   .nav-logo-text span {
-    font-size: 8px;
-    letter-spacing: 2px;
+    font-size: 7px;
+    letter-spacing: 1px;
   }
 
   .nav-links {
-    display: none;
+    display: none !important;
   }
 
   .hamburger {
-    display: flex;
+    display: flex !important;
   }
 
   .hero {
-    padding: 120px 18px 100px;
+    min-height: auto;
+    padding: 110px 16px 70px;
   }
 
   .hero-badge {
+    width: 100%;
+    max-width: 100%;
     font-size: 10px;
-    letter-spacing: 3px;
-    padding: 6px 14px;
+    line-height: 1.6;
+    letter-spacing: 2px;
+    padding: 10px;
   }
 
   .hero h1 {
-    font-size: 56px;
-    line-height: 0.95;
+    font-size: 44px;
+    line-height: 1;
+  }
+
+  .hero h1 em {
+    font-size: 0.9em;
+    margin-top: -4px;
   }
 
   .hero-sub {
     font-size: 11px;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
+  }
+
+  .hero-divider {
+    margin-bottom: 24px;
   }
 
   .hero-tagline {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.7;
-    padding: 0 10px;
-    margin-bottom: 36px;
+    padding: 0 6px;
+    margin-bottom: 28px;
   }
 
   .hero-ctas {
-    flex-direction: column;
-    align-items: center;
     width: 100%;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .btn-primary,
   .btn-secondary {
-    width: 92%;
+    width: 100%;
     justify-content: center;
-    padding: 15px 20px;
+    padding: 14px 18px;
+    font-size: 12px;
   }
 
   .hero-info {
-    position: static;
-    margin-top: 48px;
+    position: relative;
+    bottom: auto;
+    margin-top: 40px;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
   }
 
-  .hero-info-item .value {
-    font-size: 15px;
+  .hero-info-item {
+    text-align: center;
   }
 
   .section {
-    padding: 64px 18px;
+    padding: 60px 16px;
+  }
+
+  .section-header {
+    margin-bottom: 40px;
   }
 
   .section-title {
-    font-size: 34px;
+    font-size: 30px;
   }
 
   .section-subtitle {
@@ -876,7 +902,8 @@ body {
   .about-strip {
     flex-direction: column;
     align-items: flex-start;
-    padding: 28px 18px;
+    padding: 24px 16px;
+    gap: 18px;
   }
 
   .menu-grid,
@@ -885,11 +912,16 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .menu-card,
+  .special-card {
+    width: 100%;
+  }
+
   .menu-tabs {
-    overflow-x: auto;
     flex-wrap: nowrap;
+    overflow-x: auto;
     justify-content: flex-start;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
   }
 
   .menu-tab {
@@ -897,34 +929,42 @@ body {
     flex-shrink: 0;
   }
 
+  .contact-grid {
+    gap: 30px;
+  }
+
   .map-container {
-    height: 300px;
+    height: 280px;
   }
 
   .order-options {
     flex-direction: column;
+    gap: 14px;
     align-items: center;
-    gap: 16px;
   }
 
   .footer {
-    padding: 40px 18px 24px;
+    padding: 34px 16px 24px;
   }
 
   .footer-links {
-    gap: 16px;
+    gap: 14px;
   }
 
   .float-wa {
-    width: 54px;
-    height: 54px;
-    bottom: 18px;
-    right: 18px;
+    width: 52px;
+    height: 52px;
+    right: 16px;
+    bottom: 16px;
   }
 
   .float-wa svg {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .float-wa-label {
+    display: none;
   }
 
 }
