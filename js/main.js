@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ── WhatsApp pre-filled message (non-cart buttons) ──
-  document.querySelectorAll('[data-wa]').forEach(link => {
+  // ── WhatsApp pre-filled message (non-cart buttons only) ──
+  document.querySelectorAll('a[data-wa], .float-wa[data-wa]').forEach(link => {
     const msg = encodeURIComponent(link.dataset.wa || 'Hello! I would like to place an order from Taste of India, Malta 🍛');
     link.href = `https://wa.me/35699796995?text=${msg}`;
   });
@@ -294,7 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Send to WhatsApp ──
   document.getElementById('cart-wa-btn').addEventListener('click', () => {
-    if (cart.length === 0) return;
+    if (cart.length === 0) {
+      alert('Your cart is empty! Please add some items first.');
+      return;
+    }
     const note = document.getElementById('cart-note').value.trim();
     const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
 
@@ -306,7 +309,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (note) msg += `\n\n📝 Note: ${note}`;
     msg += `\n\nThank you! 🙏`;
 
-    window.open(`https://wa.me/35699796995?text=${encodeURIComponent(msg)}`, '_blank');
+    const waUrl = `https://wa.me/35699796995?text=${encodeURIComponent(msg)}`;
+    // Works on both mobile (opens WA app) and desktop (opens WA web)
+    const a = document.createElement('a');
+    a.href = waUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   });
 
   document.getElementById('cart-clear-btn').addEventListener('click', () => {
