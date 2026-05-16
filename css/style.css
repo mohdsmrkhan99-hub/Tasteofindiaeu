@@ -771,124 +771,122 @@ body {
 ══════════════════════════════════════ */
 @keyframes fadeIn
 
-/* =================================================
-   FINAL MOBILE FIX
-================================================= */
-
 @media screen and (max-width: 768px) {
 
   body {
     overflow-x: hidden;
   }
 
+  /* NAVBAR */
   .navbar {
-    padding: 10px 14px;
-    height: auto;
-    min-height: 70px;
+    height: 60px;
+    padding: 0 12px;
   }
 
   .nav-logo {
-    max-width: 180px;
     gap: 6px;
+    max-width: 120px;
   }
 
   .nav-logo-icon {
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
-    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
   }
 
   .nav-logo-text {
-    font-size: 12px;
-    line-height: 1.1;
+    font-size: 11px;
+    line-height: 1;
   }
 
   .nav-logo-text span {
-    font-size: 7px;
+    font-size: 6px;
     letter-spacing: 1px;
   }
 
   .nav-links {
-    display: none !important;
+    gap: 10px;
   }
 
-  .hamburger {
-    display: flex !important;
+  .nav-links a {
+    font-size: 8px;
+    letter-spacing: 1px;
   }
 
+  .nav-order-btn {
+    display: none;
+  }
+
+  /* HERO SECTION */
   .hero {
-    min-height: auto;
-    padding: 110px 16px 70px;
+    min-height: 100vh;
+    padding: 90px 18px 60px;
+    justify-content: center;
   }
 
   .hero-badge {
-    width: 100%;
-    max-width: 100%;
-    font-size: 10px;
-    line-height: 1.6;
+    font-size: 8px;
     letter-spacing: 2px;
-    padding: 10px;
+    padding: 6px 10px;
+    margin-bottom: 18px;
   }
 
   .hero h1 {
-    font-size: 44px;
-    line-height: 1;
+    font-size: 48px;
+    line-height: 0.95;
+    margin-bottom: 6px;
   }
 
   .hero h1 em {
-    font-size: 0.9em;
     margin-top: -4px;
   }
 
   .hero-sub {
-    font-size: 11px;
+    font-size: 10px;
     letter-spacing: 2px;
+    margin-bottom: 14px;
   }
 
   .hero-divider {
-    margin-bottom: 24px;
+    width: 60px;
+    margin-bottom: 20px;
   }
 
   .hero-tagline {
-    font-size: 15px;
-    line-height: 1.7;
-    padding: 0 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 290px;
     margin-bottom: 28px;
+    padding: 0;
   }
 
+  /* BUTTONS */
   .hero-ctas {
-    width: 100%;
-    flex-direction: column;
-    gap: 14px;
+    flex-direction: row;
+    gap: 10px;
+    width: auto;
   }
 
   .btn-primary,
   .btn-secondary {
-    width: 100%;
-    justify-content: center;
-    padding: 14px 18px;
-    font-size: 12px;
+    width: auto;
+    padding: 12px 18px;
+    font-size: 9px;
+    letter-spacing: 1px;
   }
 
+  /* REMOVE BOTTOM INFO */
   .hero-info {
-    position: relative;
-    bottom: auto;
-    margin-top: 40px;
-    flex-direction: column;
-    gap: 18px;
+    display: none;
   }
 
-  .hero-info-item {
-    text-align: center;
+  .scroll-indicator {
+    display: none;
   }
 
+  /* SECTIONS */
   .section {
     padding: 60px 16px;
-  }
-
-  .section-header {
-    margin-bottom: 40px;
   }
 
   .section-title {
@@ -896,32 +894,22 @@ body {
   }
 
   .section-subtitle {
-    font-size: 15px;
+    font-size: 14px;
   }
 
-  .about-strip {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px 16px;
-    gap: 18px;
-  }
-
+  /* GRIDS */
   .menu-grid,
   .specials-grid,
   .contact-grid {
     grid-template-columns: 1fr;
   }
 
-  .menu-card,
-  .special-card {
-    width: 100%;
-  }
-
+  /* MENU TABS */
   .menu-tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
     justify-content: flex-start;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
   }
 
   .menu-tab {
@@ -929,42 +917,42 @@ body {
     flex-shrink: 0;
   }
 
-  .contact-grid {
-    gap: 30px;
-  }
-
-  .map-container {
-    height: 280px;
-  }
-
-  .order-options {
+  /* ABOUT */
+  .about-strip {
     flex-direction: column;
-    gap: 14px;
-    align-items: center;
+    align-items: flex-start;
+    padding: 24px 16px;
   }
 
+  /* MAP */
+  .map-container {
+    height: 260px;
+  }
+
+  /* FOOTER */
   .footer {
-    padding: 34px 16px 24px;
+    padding: 36px 16px 20px;
   }
 
   .footer-links {
     gap: 14px;
   }
 
+  .footer-links a {
+    font-size: 10px;
+  }
+
+  /* FLOATING WHATSAPP */
   .float-wa {
-    width: 52px;
-    height: 52px;
-    right: 16px;
+    width: 50px;
+    height: 50px;
     bottom: 16px;
+    right: 16px;
   }
 
   .float-wa svg {
-    width: 26px;
-    height: 26px;
-  }
-
-  .float-wa-label {
-    display: none;
+    width: 24px;
+    height: 24px;
   }
 
 }
