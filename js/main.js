@@ -10,6 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 60);
   });
 
+  // ── Offer Banner ──
+  const offerBanner = document.querySelector('.offer-banner');
+  if (offerBanner) {
+    document.body.classList.add('banner-visible');
+    offerBanner.querySelector('.offer-banner-close').addEventListener('click', () => {
+      offerBanner.classList.add('hidden');
+      document.body.classList.remove('banner-visible');
+    });
+  }
+
   // ── Mobile hamburger menu ──
   const hamburger = document.querySelector('.hamburger');
   const mobileNav = document.querySelector('.mobile-nav');
@@ -262,10 +272,34 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `).join('');
 
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const DELIVERY_THRESHOLD = 15;
+    const DELIVERY_FEE = 2;
+    const deliveryCharge = subtotal < DELIVERY_THRESHOLD ? DELIVERY_FEE : 0;
+    const total = subtotal + deliveryCharge;
+
     document.getElementById('cart-total').innerHTML = `
-      <span>Total</span>
-      <span style="font-size:20px;color:var(--gold);">€${total.toFixed(2)}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:13px;color:rgba(232,201,122,0.7);">Subtotal</span>
+        <span style="font-size:14px;color:rgba(232,201,122,0.9);">€${subtotal.toFixed(2)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;color:rgba(232,201,122,0.7);">🛵 Delivery</span>
+        <span style="font-size:13px;${deliveryCharge === 0 ? 'color:#4caf50;font-weight:700;' : 'color:rgba(232,201,122,0.9);'}">
+          ${deliveryCharge === 0 ? '✓ FREE' : '€' + DELIVERY_FEE.toFixed(2)}
+        </span>
+      </div>
+      ${subtotal < DELIVERY_THRESHOLD ? `
+      <div style="background:rgba(232,201,122,0.08);border:1px solid rgba(232,201,122,0.2);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11.5px;color:rgba(232,201,122,0.75);text-align:center;">
+        Add €${(DELIVERY_THRESHOLD - subtotal).toFixed(2)} more for <strong style="color:var(--gold);">FREE delivery</strong>
+      </div>` : `
+      <div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11.5px;color:#4caf50;text-align:center;">
+        🎉 You qualify for <strong>FREE delivery!</strong>
+      </div>`}
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(232,201,122,0.2);padding-top:8px;">
+        <span style="font-size:15px;font-weight:700;">Total</span>
+        <span style="font-size:20px;color:var(--gold);font-weight:700;">€${total.toFixed(2)}</span>
+      </div>
     `;
 
     // Bind buttons
@@ -292,6 +326,96 @@ document.addEventListener('DOMContentLoaded', () => {
     return '🌿';
   }
 
+  // ── Location Modal ──
+  const locModal = document.createElement('div');
+  locModal.className = 'loc-modal-overlay';
+  locModal.innerHTML = `
+    <div class="loc-modal">
+      <div class="loc-modal-icon">📍</div>
+      <h3>Your Delivery Location</h3>
+      <p>So we can deliver to you, please share your location or type your address.</p>
+      <div class="loc-modal-btns">
+        <button class="loc-btn-share" id="loc-gps-btn">
+          📡 Share My Location (GPS)
+        </button>
+        <button class="loc-btn-manual" id="loc-manual-toggle">✏️ Type My Address Instead</button>
+        <div class="loc-manual-input" id="loc-manual-box">
+          <textarea id="loc-address-text" rows="3" placeholder="e.g. 12 Triq il-Kbira, Msida, Malta"></textarea>
+          <button class="loc-btn-confirm" id="loc-address-confirm">✓ Confirm Address</button>
+        </div>
+      </div>
+      <button class="loc-skip" id="loc-skip">Skip — I'll tell you in the chat</button>
+    </div>
+  `;
+  document.body.appendChild(locModal);
+
+  let pendingWaMsg = '';
+
+  function openLocModal(waMsg) {
+    pendingWaMsg = waMsg;
+    locModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLocModal() {
+    locModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function sendToWhatsApp(msg) {
+    closeLocModal();
+    const waUrl = `https://wa.me/35699796995?text=${encodeURIComponent(msg)}`;
+    const a = document.createElement('a');
+    a.href = waUrl; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+
+  // GPS share
+  document.getElementById('loc-gps-btn').addEventListener('click', () => {
+    const btn = document.getElementById('loc-gps-btn');
+    btn.textContent = '⏳ Getting location...';
+    btn.disabled = true;
+    if (!navigator.geolocation) {
+      alert('GPS not supported on your device. Please type your address.');
+      btn.textContent = '📡 Share My Location (GPS)';
+      btn.disabled = false;
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
+        const fullMsg = pendingWaMsg + `\n\n📍 *My Location:* ${mapsLink}`;
+        sendToWhatsApp(fullMsg);
+        btn.textContent = '📡 Share My Location (GPS)';
+        btn.disabled = false;
+      },
+      () => {
+        alert('Could not get GPS location. Please type your address instead.');
+        btn.textContent = '📡 Share My Location (GPS)';
+        btn.disabled = false;
+      },
+      { timeout: 10000 }
+    );
+  });
+
+  // Manual address toggle
+  document.getElementById('loc-manual-toggle').addEventListener('click', () => {
+    const box = document.getElementById('loc-manual-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Confirm typed address
+  document.getElementById('loc-address-confirm').addEventListener('click', () => {
+    const addr = document.getElementById('loc-address-text').value.trim();
+    if (!addr) { alert('Please enter your address.'); return; }
+    const fullMsg = pendingWaMsg + `\n\n📍 *My Address:* ${addr}`;
+    sendToWhatsApp(fullMsg);
+  });
+
+  // Skip location
+  document.getElementById('loc-skip').addEventListener('click', () => {
+    sendToWhatsApp(pendingWaMsg);
+  });
+
   // ── Send to WhatsApp ──
   document.getElementById('cart-wa-btn').addEventListener('click', () => {
     if (cart.length === 0) {
@@ -299,25 +423,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const note = document.getElementById('cart-note').value.trim();
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const deliveryCharge = subtotal < 15 ? 2 : 0;
+    const total = subtotal + deliveryCharge;
 
     let msg = `Hello! 🍛 I'd like to place an order from *Taste of India, Malta*:\n\n`;
     cart.forEach(item => {
       msg += `• ${item.qty}x ${item.name} (${item.spicy}) — €${(item.price * item.qty).toFixed(2)}\n`;
     });
+    msg += `\n*Subtotal: €${subtotal.toFixed(2)}*`;
+    msg += `\n*Delivery: ${deliveryCharge === 0 ? 'FREE 🎉' : '€2.00'}*`;
     msg += `\n*Total: €${total.toFixed(2)}*`;
     if (note) msg += `\n\n📝 Note: ${note}`;
     msg += `\n\nThank you! 🙏`;
 
-    const waUrl = `https://wa.me/35699796995?text=${encodeURIComponent(msg)}`;
-    // Works on both mobile (opens WA app) and desktop (opens WA web)
-    const a = document.createElement('a');
-    a.href = waUrl;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    openLocModal(msg);
   });
 
   document.getElementById('cart-clear-btn').addEventListener('click', () => {
