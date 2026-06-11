@@ -79,6 +79,63 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ══════════════════════════════════════
+  //  OPENING HOURS CHECK (9:00 AM – 11:59 PM, Malta time, every day)
+  // ══════════════════════════════════════
+  function checkOpenStatus() {
+    // Malta is UTC+1 (CET) or UTC+2 (CEST in summer)
+    const nowMalta = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Malta' }));
+    const hour   = nowMalta.getHours();
+    const minute = nowMalta.getMinutes();
+    const totalMinutes = hour * 60 + minute;
+    // Open: 09:00 (540) to 23:59 (1439)
+    const isOpen = totalMinutes >= 540 && totalMinutes <= 1439;
+
+    const badge       = document.getElementById('hours-status-badge');
+    const closedNote  = document.getElementById('closed-notice');
+    const mainOrderBtn = document.getElementById('main-order-btn');
+    const floatWaBtn  = document.querySelector('.float-wa');
+    const cartWaBtn   = document.getElementById('cart-wa-btn');
+    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+
+    if (badge) {
+      badge.className = 'hours-status-badge ' + (isOpen ? 'open' : 'closed');
+      badge.innerHTML = `<span class="hours-status-dot"></span>${isOpen ? '✦ We\'re Open Now · 9 AM – 11:59 PM' : '✦ Currently Closed · Opens at 9:00 AM'}`;
+    }
+
+    if (isOpen) {
+      if (closedNote)  closedNote.style.display  = 'none';
+      if (mainOrderBtn) mainOrderBtn.classList.remove('btn-disabled');
+      if (floatWaBtn)  floatWaBtn.style.opacity  = '1';
+      if (floatWaBtn)  floatWaBtn.style.pointerEvents = 'auto';
+      if (cartWaBtn)   cartWaBtn.disabled = false;
+      addToCartBtns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+    } else {
+      if (closedNote)  closedNote.style.display  = 'flex';
+      if (mainOrderBtn) mainOrderBtn.classList.add('btn-disabled');
+      if (floatWaBtn) {
+        floatWaBtn.style.opacity = '0.4';
+        floatWaBtn.style.pointerEvents = 'none';
+      }
+      if (cartWaBtn) {
+        cartWaBtn.disabled = true;
+        cartWaBtn.textContent = '🕙 We\'re Closed — Opens at 9:00 AM';
+        cartWaBtn.style.opacity = '0.5';
+        cartWaBtn.style.cursor = 'not-allowed';
+      }
+      addToCartBtns.forEach(b => {
+        b.disabled = true;
+        b.style.opacity = '0.45';
+        b.style.cursor = 'not-allowed';
+        b.innerHTML = '🕙 Closed';
+      });
+    }
+  }
+
+  checkOpenStatus();
+  // Re-check every minute
+  setInterval(checkOpenStatus, 60000);
+
+  // ══════════════════════════════════════
   //  CART SYSTEM
   // ══════════════════════════════════════
 
