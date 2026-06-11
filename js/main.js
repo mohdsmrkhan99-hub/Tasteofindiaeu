@@ -279,26 +279,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const total = subtotal + deliveryCharge;
 
     document.getElementById('cart-total').innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="font-size:13px;color:rgba(232,201,122,0.7);">Subtotal</span>
-        <span style="font-size:14px;color:rgba(232,201,122,0.9);">€${subtotal.toFixed(2)}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-size:13px;color:rgba(232,201,122,0.7);">🛵 Delivery</span>
-        <span style="font-size:13px;${deliveryCharge === 0 ? 'color:#4caf50;font-weight:700;' : 'color:rgba(232,201,122,0.9);'}">
-          ${deliveryCharge === 0 ? '✓ FREE' : '€' + DELIVERY_FEE.toFixed(2)}
-        </span>
-      </div>
-      ${subtotal < DELIVERY_THRESHOLD ? `
-      <div style="background:rgba(232,201,122,0.08);border:1px solid rgba(232,201,122,0.2);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11.5px;color:rgba(232,201,122,0.75);text-align:center;">
-        Add €${(DELIVERY_THRESHOLD - subtotal).toFixed(2)} more for <strong style="color:var(--gold);">FREE delivery</strong>
-      </div>` : `
-      <div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11.5px;color:#4caf50;text-align:center;">
-        🎉 You qualify for <strong>FREE delivery!</strong>
-      </div>`}
-      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(232,201,122,0.2);padding-top:8px;">
-        <span style="font-size:15px;font-weight:700;">Total</span>
-        <span style="font-size:20px;color:var(--gold);font-weight:700;">€${total.toFixed(2)}</span>
+      <div style="border-top:1px solid rgba(232,201,122,0.15);padding-top:14px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:rgba(232,201,122,0.65);">Subtotal</span>
+          <span style="font-size:14px;color:rgba(232,201,122,0.9);">€${subtotal.toFixed(2)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:rgba(232,201,122,0.65);">🛵 Delivery</span>
+          <span style="font-size:13px;font-weight:700;${deliveryCharge === 0 ? 'color:#4caf50;' : 'color:rgba(232,201,122,0.9);'}">
+            ${deliveryCharge === 0 ? '✓ FREE' : '€' + DELIVERY_FEE.toFixed(2)}
+          </span>
+        </div>
+        ${subtotal < DELIVERY_THRESHOLD ? `
+        <div style="background:rgba(232,201,122,0.07);border:1px solid rgba(232,201,122,0.18);border-radius:8px;padding:8px 12px;font-size:12px;color:rgba(232,201,122,0.8);text-align:center;line-height:1.5;">
+          🎁 Add <strong style="color:#e8c97a;">€${(DELIVERY_THRESHOLD - subtotal).toFixed(2)}</strong> more for <strong style="color:#e8c97a;">FREE delivery</strong>
+        </div>` : `
+        <div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);border-radius:8px;padding:8px 12px;font-size:12px;color:#4caf50;text-align:center;">
+          🎉 You've unlocked <strong>FREE delivery!</strong>
+        </div>`}
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(232,201,122,0.2);padding-top:10px;margin-top:2px;">
+          <span style="font-size:15px;font-weight:700;letter-spacing:0.5px;">Total</span>
+          <span style="font-size:22px;color:var(--gold);font-weight:700;">€${total.toFixed(2)}</span>
+        </div>
       </div>
     `;
 
@@ -334,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="loc-modal-icon">📍</div>
       <h3>Your Delivery Location</h3>
       <p>So we can deliver to you, please share your location or type your address.</p>
+      <div id="loc-error" style="display:none;background:rgba(181,18,27,0.15);border:1px solid rgba(181,18,27,0.4);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12.5px;color:#ff6b6b;text-align:center;"></div>
       <div class="loc-modal-btns">
         <button class="loc-btn-share" id="loc-gps-btn">
           📡 Share My Location (GPS)
@@ -368,15 +371,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }
 
+  function showLocError(msg) {
+    const el = document.getElementById('loc-error');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 5000);
+  }
+
   // GPS share
   document.getElementById('loc-gps-btn').addEventListener('click', () => {
     const btn = document.getElementById('loc-gps-btn');
-    btn.textContent = '⏳ Getting location...';
+    btn.innerHTML = '⏳ Getting location...';
     btn.disabled = true;
     if (!navigator.geolocation) {
-      alert('GPS not supported on your device. Please type your address.');
-      btn.textContent = '📡 Share My Location (GPS)';
+      showLocError('GPS not supported on your device. Please type your address below.');
+      btn.innerHTML = '📡 Share My Location (GPS)';
       btn.disabled = false;
+      document.getElementById('loc-manual-box').style.display = 'block';
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -385,13 +397,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
         const fullMsg = pendingWaMsg + `\n\n📍 *My Location:* ${mapsLink}`;
         sendToWhatsApp(fullMsg);
-        btn.textContent = '📡 Share My Location (GPS)';
+        btn.innerHTML = '📡 Share My Location (GPS)';
         btn.disabled = false;
       },
       () => {
-        alert('Could not get GPS location. Please type your address instead.');
-        btn.textContent = '📡 Share My Location (GPS)';
+        showLocError('Could not get GPS. Please type your address below instead.');
+        btn.innerHTML = '📡 Share My Location (GPS)';
         btn.disabled = false;
+        document.getElementById('loc-manual-box').style.display = 'block';
       },
       { timeout: 10000 }
     );
@@ -406,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Confirm typed address
   document.getElementById('loc-address-confirm').addEventListener('click', () => {
     const addr = document.getElementById('loc-address-text').value.trim();
-    if (!addr) { alert('Please enter your address.'); return; }
+    if (!addr) { showLocError('Please enter your delivery address.'); return; }
     const fullMsg = pendingWaMsg + `\n\n📍 *My Address:* ${addr}`;
     sendToWhatsApp(fullMsg);
   });
@@ -419,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Send to WhatsApp ──
   document.getElementById('cart-wa-btn').addEventListener('click', () => {
     if (cart.length === 0) {
-      alert('Your cart is empty! Please add some items first.');
+      showToast('Your cart is empty! Add items first 🍛');
       return;
     }
     const note = document.getElementById('cart-note').value.trim();
