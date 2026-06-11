@@ -453,42 +453,13 @@ body {
   background: rgba(255,253,247,0.05);
   border: 1px solid rgba(201,168,76,0.2);
   border-radius: 4px;
-  overflow: hidden;
-  padding: 0;
-  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  padding: 20px;
+  transition: border-color 0.2s, background 0.2s;
   position: relative;
 }
 .menu-card:hover {
   border-color: rgba(201,168,76,0.5);
   background: rgba(255,253,247,0.08);
-  transform: translateY(-2px);
-}
-/* Image at top of card */
-.menu-card-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  display: block;
-  border-bottom: 1px solid rgba(201,168,76,0.15);
-}
-/* Card content padding (when image present) */
-.menu-card-img + .menu-card-header,
-.menu-card-img ~ .menu-card-header {
-  padding: 14px 16px 0;
-}
-.menu-card-img ~ .menu-card-desc,
-.menu-card-img ~ .menu-card-tag,
-.menu-card-img ~ .add-to-cart-btn {
-  margin-left: 16px;
-  margin-right: 16px;
-}
-.menu-card-img ~ .add-to-cart-btn {
-  margin-bottom: 14px;
-  width: calc(100% - 32px);
-}
-/* Cards without image keep original padding */
-.menu-card:not(:has(.menu-card-img)) {
-  padding: 20px;
 }
 .menu-card.featured {
   border-color: rgba(201,168,76,0.5);
@@ -940,9 +911,7 @@ body {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  .menu-card { padding: 0; }
-  .menu-card:not(:has(.menu-card-img)) { padding: 16px; }
-  .menu-card-img { height: 160px; }
+  .menu-card { padding: 16px; }
   .menu-card-name { font-size: 13px; }
   .menu-card-price { font-size: 15px; }
   .menu-card-desc { font-size: 12px; }
