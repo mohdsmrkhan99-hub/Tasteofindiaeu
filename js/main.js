@@ -473,17 +473,41 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCart();
 
   // ══════════════════════════════════════
-  //  PHOTO GALLERY LIGHTBOX
+  //  PHOTO GALLERY — MODAL + LIGHTBOX
   // ══════════════════════════════════════
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  const lightbox = document.getElementById('galleryLightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
+  const openGalleryBtn  = document.getElementById('openGalleryBtn');
+  const closeGalleryBtn = document.getElementById('closeGalleryBtn');
+  const galleryModal    = document.getElementById('galleryModal');
+  const galleryItems    = document.querySelectorAll('.gallery-item');
+  const lightbox        = document.getElementById('galleryLightbox');
+  const lightboxImg     = document.getElementById('lightboxImg');
   const lightboxCaption = document.getElementById('lightboxCaption');
-  const lightboxClose = document.getElementById('lightboxClose');
-  const lightboxPrev = document.getElementById('lightboxPrev');
-  const lightboxNext = document.getElementById('lightboxNext');
+  const lightboxClose   = document.getElementById('lightboxClose');
+  const lightboxPrev    = document.getElementById('lightboxPrev');
+  const lightboxNext    = document.getElementById('lightboxNext');
   let currentLightboxIndex = 0;
 
+  // Open / close the gallery modal
+  if (openGalleryBtn && galleryModal) {
+    openGalleryBtn.addEventListener('click', () => {
+      galleryModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  function closeGalleryModal() {
+    if (galleryModal) {
+      galleryModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  if (closeGalleryBtn) closeGalleryBtn.addEventListener('click', closeGalleryModal);
+  if (galleryModal) {
+    galleryModal.addEventListener('click', (e) => {
+      if (e.target === galleryModal) closeGalleryModal();
+    });
+  }
+
+  // Lightbox open/close
   function openLightbox(index) {
     currentLightboxIndex = index;
     const item = galleryItems[index];
@@ -491,19 +515,14 @@ document.addEventListener('DOMContentLoaded', () => {
     lightboxImg.alt = item.dataset.caption;
     lightboxCaption.textContent = item.dataset.caption;
     lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
   }
-
   function closeLightbox() {
     lightbox.classList.remove('open');
-    document.body.style.overflow = '';
   }
-
   function showPrev() {
     currentLightboxIndex = (currentLightboxIndex - 1 + galleryItems.length) % galleryItems.length;
     openLightbox(currentLightboxIndex);
   }
-
   function showNext() {
     currentLightboxIndex = (currentLightboxIndex + 1) % galleryItems.length;
     openLightbox(currentLightboxIndex);
@@ -514,21 +533,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-  if (lightboxPrev) lightboxPrev.addEventListener('click', showPrev);
-  if (lightboxNext) lightboxNext.addEventListener('click', showNext);
-
+  if (lightboxPrev)  lightboxPrev.addEventListener('click', showPrev);
+  if (lightboxNext)  lightboxNext.addEventListener('click', showNext);
   if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
-    });
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   }
 
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
-    if (!lightbox || !lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') showPrev();
-    if (e.key === 'ArrowRight') showNext();
+    if (lightbox && lightbox.classList.contains('open')) {
+      if (e.key === 'Escape')      closeLightbox();
+      if (e.key === 'ArrowLeft')   showPrev();
+      if (e.key === 'ArrowRight')  showNext();
+    } else if (galleryModal && galleryModal.classList.contains('open')) {
+      if (e.key === 'Escape') closeGalleryModal();
+    }
   });
 
 });
