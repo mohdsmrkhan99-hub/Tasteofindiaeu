@@ -79,63 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ══════════════════════════════════════
-  //  OPENING HOURS CHECK (9:00 AM – 11:59 PM, Malta time, every day)
-  // ══════════════════════════════════════
-  function checkOpenStatus() {
-    // Malta is UTC+1 (CET) or UTC+2 (CEST in summer)
-    const nowMalta = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Malta' }));
-    const hour   = nowMalta.getHours();
-    const minute = nowMalta.getMinutes();
-    const totalMinutes = hour * 60 + minute;
-    // Open: 09:00 (540) to 23:59 (1439)
-    const isOpen = totalMinutes >= 540 && totalMinutes <= 1439;
-
-    const badge       = document.getElementById('hours-status-badge');
-    const closedNote  = document.getElementById('closed-notice');
-    const mainOrderBtn = document.getElementById('main-order-btn');
-    const floatWaBtn  = document.querySelector('.float-wa');
-    const cartWaBtn   = document.getElementById('cart-wa-btn');
-    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
-
-    if (badge) {
-      badge.className = 'hours-status-badge ' + (isOpen ? 'open' : 'closed');
-      badge.innerHTML = `<span class="hours-status-dot"></span>${isOpen ? '✦ We\'re Open Now · 9 AM – 11:59 PM' : '✦ Currently Closed · Opens at 9:00 AM'}`;
-    }
-
-    if (isOpen) {
-      if (closedNote)  closedNote.style.display  = 'none';
-      if (mainOrderBtn) mainOrderBtn.classList.remove('btn-disabled');
-      if (floatWaBtn)  floatWaBtn.style.opacity  = '1';
-      if (floatWaBtn)  floatWaBtn.style.pointerEvents = 'auto';
-      if (cartWaBtn)   cartWaBtn.disabled = false;
-      addToCartBtns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
-    } else {
-      if (closedNote)  closedNote.style.display  = 'flex';
-      if (mainOrderBtn) mainOrderBtn.classList.add('btn-disabled');
-      if (floatWaBtn) {
-        floatWaBtn.style.opacity = '0.4';
-        floatWaBtn.style.pointerEvents = 'none';
-      }
-      if (cartWaBtn) {
-        cartWaBtn.disabled = true;
-        cartWaBtn.textContent = '🕙 We\'re Closed — Opens at 9:00 AM';
-        cartWaBtn.style.opacity = '0.5';
-        cartWaBtn.style.cursor = 'not-allowed';
-      }
-      addToCartBtns.forEach(b => {
-        b.disabled = true;
-        b.style.opacity = '0.45';
-        b.style.cursor = 'not-allowed';
-        b.innerHTML = '🕙 Closed';
-      });
-    }
-  }
-
-  checkOpenStatus();
-  // Re-check every minute
-  setInterval(checkOpenStatus, 60000);
-
-  // ══════════════════════════════════════
   //  CART SYSTEM
   // ══════════════════════════════════════
 
@@ -330,10 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
 
     const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-    const DELIVERY_THRESHOLD = 15;
-    const DELIVERY_FEE = 2;
-    const deliveryCharge = subtotal < DELIVERY_THRESHOLD ? DELIVERY_FEE : 0;
-    const total = subtotal + deliveryCharge;
+    const freeCoke = subtotal > 15;
 
     document.getElementById('cart-total').innerHTML = `
       <div style="border-top:1px solid rgba(232,201,122,0.15);padding-top:14px;display:flex;flex-direction:column;gap:8px;">
@@ -343,20 +283,22 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <span style="font-size:13px;color:rgba(232,201,122,0.65);">🛵 Delivery</span>
-          <span style="font-size:13px;font-weight:700;${deliveryCharge === 0 ? 'color:#4caf50;' : 'color:rgba(232,201,122,0.9);'}">
-            ${deliveryCharge === 0 ? '✓ FREE' : '€' + DELIVERY_FEE.toFixed(2)}
-          </span>
+          <span style="font-size:13px;font-weight:700;color:rgba(232,201,122,0.9);">From €2.00</span>
         </div>
-        ${subtotal < DELIVERY_THRESHOLD ? `
-        <div style="background:rgba(232,201,122,0.07);border:1px solid rgba(232,201,122,0.18);border-radius:8px;padding:8px 12px;font-size:12px;color:rgba(232,201,122,0.8);text-align:center;line-height:1.5;">
-          🎁 Add <strong style="color:#e8c97a;">€${(DELIVERY_THRESHOLD - subtotal).toFixed(2)}</strong> more for <strong style="color:#e8c97a;">FREE delivery</strong>
+        ${freeCoke ? `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:rgba(232,201,122,0.65);">🥤 Coke</span>
+          <span style="font-size:13px;font-weight:700;color:#4caf50;">FREE 🎉</span>
         </div>` : `
-        <div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);border-radius:8px;padding:8px 12px;font-size:12px;color:#4caf50;text-align:center;">
-          🎉 You've unlocked <strong>FREE delivery!</strong>
+        <div style="background:rgba(232,201,122,0.07);border:1px solid rgba(232,201,122,0.18);border-radius:8px;padding:8px 12px;font-size:11.5px;color:rgba(232,201,122,0.8);text-align:center;line-height:1.5;">
+          🥤 Add <strong style="color:#e8c97a;">€${(15 - subtotal).toFixed(2)}</strong> more to get a <strong style="color:#e8c97a;">FREE Coke!</strong>
         </div>`}
+        <div style="background:rgba(232,201,122,0.07);border:1px solid rgba(232,201,122,0.18);border-radius:8px;padding:8px 12px;font-size:11.5px;color:rgba(232,201,122,0.7);text-align:center;line-height:1.5;">
+          📍 Delivery charge depends on your distance.<br>Minimum €2 — final charge confirmed on order.
+        </div>
         <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(232,201,122,0.2);padding-top:10px;margin-top:2px;">
-          <span style="font-size:15px;font-weight:700;letter-spacing:0.5px;">Total</span>
-          <span style="font-size:22px;color:var(--gold);font-weight:700;">€${total.toFixed(2)}</span>
+          <span style="font-size:15px;font-weight:700;letter-spacing:0.5px;">Subtotal</span>
+          <span style="font-size:22px;color:var(--gold);font-weight:700;">€${subtotal.toFixed(2)}</span>
         </div>
       </div>
     `;
@@ -494,16 +436,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const note = document.getElementById('cart-note').value.trim();
     const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-    const deliveryCharge = subtotal < 15 ? 2 : 0;
-    const total = subtotal + deliveryCharge;
+    const freeCoke = subtotal > 15;
 
     let msg = `Hello! 🍛 I'd like to place an order from *Taste of India, Malta*:\n\n`;
     cart.forEach(item => {
       msg += `• ${item.qty}x ${item.name} (${item.spicy}) — €${(item.price * item.qty).toFixed(2)}\n`;
     });
+    if (freeCoke) msg += `• 🥤 Coke — *FREE (order over €15)*\n`;
     msg += `\n*Subtotal: €${subtotal.toFixed(2)}*`;
-    msg += `\n*Delivery: ${deliveryCharge === 0 ? 'FREE 🎉' : '€2.00'}*`;
-    msg += `\n*Total: €${total.toFixed(2)}*`;
+    msg += `\n*Delivery: From €2.00 (please confirm based on my location)*`;
     if (note) msg += `\n\n📝 Note: ${note}`;
     msg += `\n\nThank you! 🙏`;
 
@@ -528,83 +469,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial render
   renderCart();
-
-  // ══════════════════════════════════════
-  //  PHOTO GALLERY — MODAL + LIGHTBOX
-  // ══════════════════════════════════════
-  const openGalleryBtn  = document.getElementById('openGalleryBtn');
-  const closeGalleryBtn = document.getElementById('closeGalleryBtn');
-  const galleryModal    = document.getElementById('galleryModal');
-  const galleryItems    = document.querySelectorAll('.gallery-item');
-  const lightbox        = document.getElementById('galleryLightbox');
-  const lightboxImg     = document.getElementById('lightboxImg');
-  const lightboxCaption = document.getElementById('lightboxCaption');
-  const lightboxClose   = document.getElementById('lightboxClose');
-  const lightboxPrev    = document.getElementById('lightboxPrev');
-  const lightboxNext    = document.getElementById('lightboxNext');
-  let currentLightboxIndex = 0;
-
-  // Open / close the gallery modal
-  if (openGalleryBtn && galleryModal) {
-    openGalleryBtn.addEventListener('click', () => {
-      galleryModal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-  }
-  function closeGalleryModal() {
-    if (galleryModal) {
-      galleryModal.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-  }
-  if (closeGalleryBtn) closeGalleryBtn.addEventListener('click', closeGalleryModal);
-  if (galleryModal) {
-    galleryModal.addEventListener('click', (e) => {
-      if (e.target === galleryModal) closeGalleryModal();
-    });
-  }
-
-  // Lightbox open/close
-  function openLightbox(index) {
-    currentLightboxIndex = index;
-    const item = galleryItems[index];
-    lightboxImg.src = item.dataset.src;
-    lightboxImg.alt = item.dataset.caption;
-    lightboxCaption.textContent = item.dataset.caption;
-    lightbox.classList.add('open');
-  }
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-  }
-  function showPrev() {
-    currentLightboxIndex = (currentLightboxIndex - 1 + galleryItems.length) % galleryItems.length;
-    openLightbox(currentLightboxIndex);
-  }
-  function showNext() {
-    currentLightboxIndex = (currentLightboxIndex + 1) % galleryItems.length;
-    openLightbox(currentLightboxIndex);
-  }
-
-  galleryItems.forEach((item, i) => {
-    item.addEventListener('click', () => openLightbox(i));
-  });
-
-  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-  if (lightboxPrev)  lightboxPrev.addEventListener('click', showPrev);
-  if (lightboxNext)  lightboxNext.addEventListener('click', showNext);
-  if (lightbox) {
-    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-  }
-
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (lightbox && lightbox.classList.contains('open')) {
-      if (e.key === 'Escape')      closeLightbox();
-      if (e.key === 'ArrowLeft')   showPrev();
-      if (e.key === 'ArrowRight')  showNext();
-    } else if (galleryModal && galleryModal.classList.contains('open')) {
-      if (e.key === 'Escape') closeGalleryModal();
-    }
-  });
 
 });
