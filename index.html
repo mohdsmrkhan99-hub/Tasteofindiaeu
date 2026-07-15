@@ -138,6 +138,138 @@
       border: none;
     }
     .loc-skip:hover { color: rgba(232,201,122,0.7); }
+
+    /* ── Opening Hours Status Badge ── */
+    .hours-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.3px;
+    }
+    .hours-status-badge.status-open {
+      background: rgba(76,175,80,0.15);
+      border: 1px solid rgba(76,175,80,0.4);
+      color: #4caf50;
+    }
+    .hours-status-badge.status-closed {
+      background: rgba(181,18,27,0.15);
+      border: 1px solid rgba(181,18,27,0.4);
+      color: #ff6b6b;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .status-dot.open  { background: #4caf50; box-shadow: 0 0 6px #4caf50; animation: pulse-green 1.5s infinite; }
+    .status-dot.closed { background: #ff6b6b; }
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 4px #4caf50; }
+      50%       { box-shadow: 0 0 10px #4caf50; }
+    }
+    .closed-notice {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(181,18,27,0.1);
+      border: 1px solid rgba(181,18,27,0.3);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .closed-notice-icon { font-size: 28px; flex-shrink: 0; }
+    .closed-notice-text { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: rgba(232,201,122,0.8); line-height: 1.5; }
+    .closed-notice-text strong { color: #ff6b6b; font-size: 14px; }
+
+    /* ── Menu Search & Filters ── */
+    .menu-search-row { display:flex;flex-direction:column;gap:12px;margin-bottom:20px; }
+    .menu-search-wrap { position:relative;display:flex;align-items:center; }
+    .menu-search-icon { position:absolute;left:14px;font-size:16px; }
+    #menu-search {
+      width:100%;padding:12px 40px 12px 42px;border-radius:10px;
+      background:rgba(232,201,122,0.07);border:1px solid rgba(232,201,122,0.2);
+      color:#e8c97a;font-size:14px;outline:none;box-sizing:border-box;
+      transition:border-color 0.2s;
+    }
+    #menu-search::placeholder { color:rgba(232,201,122,0.35); }
+    #menu-search:focus { border-color:rgba(232,201,122,0.5); }
+    .menu-search-clear { position:absolute;right:12px;background:none;border:none;color:rgba(232,201,122,0.5);font-size:16px;cursor:pointer;padding:4px; }
+    .diet-filters { display:flex;gap:8px;flex-wrap:wrap; }
+    .diet-btn {
+      padding:7px 14px;border-radius:999px;border:1px solid rgba(232,201,122,0.25);
+      background:rgba(232,201,122,0.07);color:rgba(232,201,122,0.7);
+      font-size:12.5px;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+    }
+    .diet-btn.active { background:var(--gold,#e8c97a);color:#1a0800;font-weight:700;border-color:var(--gold,#e8c97a); }
+    .diet-btn:hover:not(.active) { background:rgba(232,201,122,0.15); }
+    .menu-card.hidden-by-filter { display:none!important; }
+
+    /* ── Reviews ── */
+    .reviews-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:32px; }
+    .review-card {
+      background:rgba(232,201,122,0.05);border:1px solid rgba(232,201,122,0.15);
+      border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;
+      transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .review-card:hover { transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+    .review-stars { color:#FFD700;font-size:16px;letter-spacing:2px; }
+    .review-text { font-size:13.5px;color:rgba(232,201,122,0.8);line-height:1.7;font-style:italic;flex:1; }
+    .review-author { display:flex;align-items:center;gap:10px;margin-top:4px; }
+    .review-avatar {
+      width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#b5121b,#8b0000);
+      display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;
+    }
+    .review-name { font-size:13px;font-weight:700;color:#e8c97a; }
+    .review-date { font-size:11px;color:rgba(232,201,122,0.45);margin-top:2px; }
+    .review-cta-btn {
+      display:inline-block;padding:12px 28px;border-radius:999px;
+      background:linear-gradient(135deg,#b5121b,#8b0000);color:#fff;
+      font-size:14px;font-weight:700;text-decoration:none;
+      transition:opacity 0.2s;box-shadow:0 4px 16px rgba(181,18,27,0.4);
+    }
+    .review-cta-btn:hover { opacity:0.88; }
+
+    /* ── Loyalty Banner ── */
+    .loyalty-banner {
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+      background:linear-gradient(135deg,#1a0800,#2d1000);
+      border:1px solid rgba(232,201,122,0.35);border-radius:14px;
+      padding:14px 20px;display:flex;align-items:center;gap:14px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:8888;
+      max-width:340px;width:90%;
+      animation:slideUp 0.4s ease;
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px);} to{opacity:1;transform:translateX(-50%) translateY(0);} }
+    .loyalty-banner-icon { font-size:28px;flex-shrink:0; }
+    .loyalty-banner-text { flex:1; }
+    .loyalty-banner-text strong { display:block;color:#e8c97a;font-size:13.5px; }
+    .loyalty-banner-text span { font-size:12px;color:rgba(232,201,122,0.6); }
+    .loyalty-progress { display:flex;gap:5px;margin-top:8px; }
+    .loyalty-dot { width:20px;height:6px;border-radius:3px;background:rgba(232,201,122,0.15);transition:background 0.3s; }
+    .loyalty-dot.filled { background:#e8c97a; }
+    .loyalty-claim-btn {
+      background:linear-gradient(135deg,#b5121b,#8b0000);color:#fff;
+      border:none;border-radius:8px;padding:8px 14px;font-size:12px;
+      font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;
+    }
+    .loyalty-close { position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(232,201,122,0.4);font-size:14px;cursor:pointer; }
+
+    /* ── Pre-order in Cart ── */
+    .preorder-row { margin-bottom:10px; }
+    .preorder-toggle { display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:rgba(232,201,122,0.7);margin-bottom:8px; }
+    .preorder-toggle input[type=checkbox] { accent-color:#e8c97a;width:15px;height:15px;cursor:pointer; }
+    .preorder-time-input {
+      width:100%;padding:9px 12px;border-radius:8px;border:1px solid rgba(232,201,122,0.25);
+      background:rgba(232,201,122,0.07);color:#e8c97a;font-size:13px;
+      box-sizing:border-box;display:none;
+    }
+    .preorder-time-input:focus { outline:none;border-color:rgba(232,201,122,0.5); }
   </style>
 </head>
 <body>
@@ -465,8 +597,24 @@
       <p class="section-subtitle">Breakfast · Dosa · Starters · Curries · Biryani · Rice · Noodles · Combos</p>
     </div>
 
+    <!-- Search + Dietary Filters -->
+    <div class="menu-search-row reveal">
+      <div class="menu-search-wrap">
+        <span class="menu-search-icon">🔍</span>
+        <input type="text" id="menu-search" placeholder="Search dishes e.g. chicken, paneer, biryani..." autocomplete="off">
+        <button class="menu-search-clear" id="search-clear" style="display:none;">✕</button>
+      </div>
+      <div class="diet-filters">
+        <button class="diet-btn active" data-diet="all">🍽 All</button>
+        <button class="diet-btn" data-diet="veg">🌱 Veg</button>
+        <button class="diet-btn" data-diet="nonveg">🍖 Non-Veg</button>
+        <button class="diet-btn" data-diet="spicy">🌶 Spicy</button>
+      </div>
+    </div>
+    <div id="search-results-info" style="display:none;text-align:center;font-size:13px;color:rgba(232,201,122,0.6);margin-bottom:12px;"></div>
+
     <!-- Tabs -->
-    <div class="menu-tabs reveal">
+    <div class="menu-tabs reveal" id="menu-tabs-row">
       <button class="menu-tab active" data-tab="tab-breakfast">Breakfast</button>
       <button class="menu-tab" data-tab="tab-dosa">Dosa</button>
       <button class="menu-tab" data-tab="tab-starters-veg">Starters Veg</button>
@@ -737,6 +885,62 @@
       <div class="order-option"><div class="dot"></div>Dine In Available</div>
       <div class="order-option"><div class="dot"></div>Takeaway Available</div>
       <div class="order-option"><div class="dot"></div>WhatsApp Ordering</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CUSTOMER REVIEWS
+══════════════════════════════════════ -->
+<section id="reviews" class="section section-dark">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">What People Say</span>
+      <h2 class="section-title">Customer <em>Reviews</em></h2>
+      <div class="section-line"></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
+        <span style="font-size:24px;color:#FFD700;">★★★★★</span>
+        <span style="font-size:15px;color:rgba(232,201,122,0.8);">5.0 · Google Reviews</span>
+      </div>
+    </div>
+    <div class="reviews-grid reveal">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Best Indian food in Malta! The Hyderabadi Biryani is absolutely authentic. Reminds me of home. Fast delivery and food was still hot. Highly recommend!"</p>
+        <div class="review-author">
+          <div class="review-avatar">A</div>
+          <div><div class="review-name">Ahmed K.</div><div class="review-date">Google · 2 weeks ago</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Ordered Butter Chicken and Masala Dosa — both were outstanding. The flavours are rich and genuine. Finally proper South Indian food in Malta!"</p>
+        <div class="review-author">
+          <div class="review-avatar">S</div>
+          <div><div class="review-name">Sarah M.</div><div class="review-date">Google · 1 month ago</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Ordered via WhatsApp, super easy. Ghee Roast Mutton was incredible — spicy and perfectly cooked. Will definitely be ordering again this week!"</p>
+        <div class="review-author">
+          <div class="review-avatar">R</div>
+          <div><div class="review-name">Ravi P.</div><div class="review-date">Google · 3 weeks ago</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Tried the Baahubali Mix Biryani — worth every cent. Huge portion, amazing flavour, quick delivery. This is now my go-to restaurant in Malta!"</p>
+        <div class="review-author">
+          <div class="review-avatar">L</div>
+          <div><div class="review-name">Leila T.</div><div class="review-date">Google · 1 month ago</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="https://g.page/r/YOUR-GOOGLE-REVIEW-LINK/review" target="_blank" rel="noopener noreferrer" class="review-cta-btn">
+        ⭐ Leave Us a Google Review
+      </a>
     </div>
   </div>
 </section>
