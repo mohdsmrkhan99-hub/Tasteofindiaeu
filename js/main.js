@@ -437,6 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const note = document.getElementById('cart-note').value.trim();
     const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
     const freeCoke = subtotal > 15;
+    const preorderChecked = document.getElementById('preorder-check')?.checked;
+    const preorderTime = document.getElementById('preorder-time')?.value;
 
     let msg = `Hello! 🍛 I'd like to place an order from *Taste of India, Malta*:\n\n`;
     cart.forEach(item => {
@@ -445,8 +447,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (freeCoke) msg += `• 🥤 Coke — *FREE (order over €15)*\n`;
     msg += `\n*Subtotal: €${subtotal.toFixed(2)}*`;
     msg += `\n*Delivery: From €2.00 (please confirm based on my location)*`;
+    if (preorderChecked && preorderTime) {
+      const dt = new Date(preorderTime);
+      const formatted = dt.toLocaleString('en-MT', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      msg += `\n\n⏰ *Pre-order for: ${formatted}*`;
+    }
     if (note) msg += `\n\n📝 Note: ${note}`;
     msg += `\n\nThank you! 🙏`;
+
+    // Increment loyalty count
+    const newCount = incrementLoyalty();
+    if (newCount >= LOYALTY_GOAL) showLoyaltyBanner();
 
     openLocModal(msg);
   });
@@ -466,6 +477,154 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
   }
+
+  // ── 1. MENU SEARCH ──
+  const searchInput = document.getElementById('menu-search');
+  const searchClear = document.getElementById('search-clear');
+  const searchInfo  = document.getElementById('search-results-info');
+  const menuTabsRow = document.getElementById('menu-tabs-row');
+
+  function runSearch() {
+    const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    const activeDiet = document.querySelector('.diet-btn.active')?.dataset.diet || 'all';
+    const allCards = document.querySelectorAll('.menu-card');
+    let visible = 0;
+
+    if (q || activeDiet !== 'all') {
+      document.querySelectorAll('.menu-category').forEach(c => c.style.display = 'block');
+      if (menuTabsRow) menuTabsRow.style.display = q ? 'none' : '';
+    } else {
+      document.querySelectorAll('.menu-category').forEach(c => { c.style.display = ''; });
+      if (menuTabsRow) menuTabsRow.style.display = '';
+      const activeTab = document.querySelector('.menu-tab.active');
+      if (activeTab) {
+        document.querySelectorAll('.menu-category').forEach(c => c.classList.remove('active'));
+        document.getElementById(activeTab.dataset.tab)?.classList.add('active');
+      }
+    }
+
+    allCards.forEach(card => {
+      const name = card.querySelector('.menu-card-name')?.textContent.toLowerCase() || '';
+      const desc = card.querySelector('.menu-card-desc')?.textContent.toLowerCase() || '';
+      const matchesSearch = !q || name.includes(q) || desc.includes(q);
+      const matchesDiet =
+        activeDiet === 'all' ||
+        (activeDiet === 'veg'    && card.querySelector('.tag-veg'))    ||
+        (activeDiet === 'nonveg' && card.querySelector('.tag-nonveg')) ||
+        (activeDiet === 'spicy'  && card.querySelector('.tag-spicy'));
+      if (matchesSearch && matchesDiet) { card.classList.remove('hidden-by-filter'); visible++; }
+      else card.classList.add('hidden-by-filter');
+    });
+
+    if (searchInfo) {
+      if (q || activeDiet !== 'all') {
+        searchInfo.style.display = 'block';
+        searchInfo.textContent = visible > 0 ? `${visible} dish${visible !== 1 ? 'es' : ''} found` : 'No dishes found — try a different search';
+      } else { searchInfo.style.display = 'none'; }
+    }
+    if (searchClear) searchClear.style.display = q ? 'inline' : 'none';
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', runSearch);
+    searchClear?.addEventListener('click', () => { searchInput.value = ''; runSearch(); searchInput.focus(); });
+  }
+
+  // ── 2. DIETARY FILTERS ──
+  document.querySelectorAll('.diet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.diet-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      runSearch();
+    });
+  });
+
+  // ── 3. LOYALTY SYSTEM ──
+  const LOYALTY_KEY    = 'toi_order_count';
+  const LOYALTY_GOAL   = 5;
+  const LOYALTY_REWARD = '1 Free Coke + Free Garlic Naan';
+
+  function getLoyaltyCount() { return parseInt(localStorage.getItem(LOYALTY_KEY) || '0'); }
+  function incrementLoyalty() { const c = getLoyaltyCount() + 1; localStorage.setItem(LOYALTY_KEY, c); return c; }
+  function resetLoyalty() { localStorage.setItem(LOYALTY_KEY, '0'); }
+
+  function showLoyaltyBanner() {
+    const count = getLoyaltyCount();
+    if (count === 0) return;
+    const existing = document.getElementById('loyalty-banner');
+    if (existing) existing.remove();
+    const banner = document.createElement('div');
+    banner.id = 'loyalty-banner';
+    banner.className = 'loyalty-banner';
+    const filled = Math.min(count, LOYALTY_GOAL);
+    const isReady = count >= LOYALTY_GOAL;
+    banner.style.position = 'fixed';
+    banner.innerHTML = `
+      <div class="loyalty-banner-icon">${isReady ? '🎁' : '⭐'}</div>
+      <div class="loyalty-banner-text">
+        <strong>${isReady ? '🎉 Reward Unlocked!' : 'Loyalty Reward'}</strong>
+        <span>${isReady ? `Claim your ${LOYALTY_REWARD}!` : `${filled}/${LOYALTY_GOAL} orders — keep going!`}</span>
+        <div class="loyalty-progress">${Array.from({length: LOYALTY_GOAL}, (_, i) => `<div class="loyalty-dot${i < filled ? ' filled' : ''}"></div>`).join('')}</div>
+      </div>
+      ${isReady ? `<button class="loyalty-claim-btn" id="loyalty-claim">Claim 🎁</button>` : ''}
+      <button class="loyalty-close" id="loyalty-close" style="position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(232,201,122,0.4);font-size:14px;cursor:pointer;">✕</button>
+    `;
+    document.body.appendChild(banner);
+    document.getElementById('loyalty-close')?.addEventListener('click', () => banner.remove());
+    document.getElementById('loyalty-claim')?.addEventListener('click', () => {
+      const msg = `Hello! 🎁 I've completed ${LOYALTY_GOAL} orders and I'd like to claim my loyalty reward: *${LOYALTY_REWARD}*. Thank you!`;
+      const a = document.createElement('a');
+      a.href = `https://wa.me/35699796995?text=${encodeURIComponent(msg)}`;
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      resetLoyalty(); banner.remove();
+    });
+  }
+  setTimeout(showLoyaltyBanner, 2000);
+
+  // ── 4. PRE-ORDER ──
+  const cartNoteRow = document.querySelector('.cart-note-row');
+  if (cartNoteRow) {
+    const preorderDiv = document.createElement('div');
+    preorderDiv.className = 'preorder-row';
+    preorderDiv.innerHTML = `
+      <label class="preorder-toggle">
+        <input type="checkbox" id="preorder-check"> ⏰ Schedule for later (Pre-order)
+      </label>
+      <input type="datetime-local" id="preorder-time" class="preorder-time-input"
+        min="${new Date(Date.now() + 30*60000).toISOString().slice(0,16)}">
+    `;
+    cartNoteRow.parentNode.insertBefore(preorderDiv, cartNoteRow);
+    document.getElementById('preorder-check').addEventListener('change', function() {
+      const t = document.getElementById('preorder-time');
+      t.style.display = this.checked ? 'block' : 'none';
+      if (this.checked) t.min = new Date(Date.now() + 30*60000).toISOString().slice(0,16);
+    });
+  }
+
+  // ── Opening Hours Status ──
+  function updateOpenStatus() {
+    const badge = document.getElementById('hours-status-badge');
+    const closedNotice = document.getElementById('closed-notice');
+    const orderBtn = document.getElementById('main-order-btn');
+    if (!badge) return;
+    const maltaTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Malta' }));
+    const totalMinutes = maltaTime.getHours() * 60 + maltaTime.getMinutes();
+    const isOpen = totalMinutes >= 540 && totalMinutes <= 1439;
+    if (isOpen) {
+      badge.innerHTML = `<span class="status-dot open"></span> We're Open Now 🟢`;
+      badge.className = 'hours-status-badge status-open';
+      if (closedNotice) closedNotice.style.display = 'none';
+      if (orderBtn) orderBtn.style.opacity = '1';
+    } else {
+      badge.innerHTML = `<span class="status-dot closed"></span> Currently Closed 🔴`;
+      badge.className = 'hours-status-badge status-closed';
+      if (closedNotice) closedNotice.style.display = 'flex';
+      if (orderBtn) orderBtn.style.opacity = '0.5';
+    }
+  }
+  updateOpenStatus();
+  setInterval(updateOpenStatus, 60000);
 
   // Initial render
   renderCart();
